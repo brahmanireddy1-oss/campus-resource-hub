@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+/*
+  Design tokens — Campus Resources
+  ---------------------------------
+  Signature idea: the "catalog trail" — Year > Semester > Subject reads as
+  a real card-catalog index (hairline dividers, mono index numbers)
+  rather than a generic breadcrumb.
+
+  Type:
+    display -> Space Grotesk (headings, brand)
+    body    -> Inter (everything else)
+    mono    -> JetBrains Mono (metadata: dates, counts, file types, index numbers)
+*/
+
+:root {
+  --color-ink: #14161f;
+  --color-paper: #fafaf9;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f2f2f0;
+  --color-line: #e4e4e1;
+  --color-text: #14161f;
+  --color-text-muted: #5c5f6b;
+
+  --color-accent: #3452e0;
+  --color-accent-strong: #2540c9;
+  --color-accent-soft: #eef1fd;
+
+  --color-amber: #b7791f;
+  --color-amber-soft: #fbf3e3;
+  --color-emerald: #15804a;
+  --color-emerald-soft: #e9f6ef;
+  --color-rose: #c2373c;
+  --color-rose-soft: #fbeaea;
+
+  --font-display: 'Space Grotesk', ui-sans-serif, sans-serif;
+  --font-body: 'Inter', ui-sans-serif, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius-card: 0.625rem;
+  --radius-control: 0.5rem;
+
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --color-ink: #f5f5f4;
+  --color-paper: #0d0e13;
+  --color-surface: #14161f;
+  --color-surface-muted: #191b25;
+  --color-line: #262932;
+  --color-text: #f0f0ee;
+  --color-text-muted: #8b8e9a;
+
+  --color-accent: #5b79ff;
+  --color-accent-strong: #7c94ff;
+  --color-accent-soft: #1a2140;
+
+  --color-amber: #e2a53a;
+  --color-amber-soft: #2b2313;
+  --color-emerald: #34c17f;
+  --color-emerald-soft: #10261c;
+  --color-rose: #ea6267;
+  --color-rose-soft: #2c1618;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-ink: var(--color-ink);
+  --color-paper: var(--color-paper);
+  --color-surface: var(--color-surface);
+  --color-surface-muted: var(--color-surface-muted);
+  --color-line: var(--color-line);
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+
+  --color-accent: var(--color-accent);
+  --color-accent-strong: var(--color-accent-strong);
+  --color-accent-soft: var(--color-accent-soft);
+
+  --color-amber: var(--color-amber);
+  --color-amber-soft: var(--color-amber-soft);
+  --color-emerald: var(--color-emerald);
+  --color-emerald-soft: var(--color-emerald-soft);
+  --color-rose: var(--color-rose);
+  --color-rose-soft: var(--color-rose-soft);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+
+  --radius-card: var(--radius-card);
+  --radius-control: var(--radius-control);
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono-tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
