@@ -1,16 +1,78 @@
-# React + Vite
+# MECS Campus Resource Hub
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A centralized platform for **Matrusri Engineering College (MECS)** students to access academic resources and productivity tools in one place.
 
-Currently, two official plugins are available:
+## 🌟 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- 📚 Notes
+- 📄 Previous Year Question Papers
+- 📖 Books & Study Materials
+- 💻 Lab Programs
+- 📊 Attendance Tracker *(Coming Soon)*
+- 📑 Assignments
+- 📽️ PPTs
+- 🔍 Smart Search & Filtering
+- 👨‍💼 Admin Resource Management
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React.js
+- Vite
+- Tailwind CSS
+- Supabase
+- React Router
+- Lucide React
 
-## Expanding the Oxlint configuration
+## 🚀 Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+Clone the repository:
+
+```bash
+git clone https://github.com/brahmanireddy1-oss/campus-resource-hub.git
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+Open:
+
+```
+http://localhost:5173
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── components/
+├── assets/
+├── hooks/
+├── context/
+├── lib/
+├── pages/
+└── api/
+```
+
+## 🎯 Vision
+
+The goal of this project is to provide a **single platform** where MECS students can easily access academic resources and useful student tools without searching across multiple sources.
+
+## 🤝 Contributing
+
+Contributions, suggestions, and feature requests are welcome.
+
+
+B.Tech CSE, Matrusri Engineering College
+
+---
+
+⭐ If you find this project useful, consider giving it a star!
