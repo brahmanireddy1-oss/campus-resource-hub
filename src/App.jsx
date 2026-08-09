@@ -1,6 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
 import Layout from '@/components/layout/Layout'
-import ProtectedRoute from '@/routes/ProtectedRoute'
 import AdminRoute from '@/routes/AdminRoute'
 import Home from '@/pages/Home'
 import Browse from '@/pages/Browse'
@@ -8,9 +7,7 @@ import Branch from '@/pages/Branch'
 import Year from '@/pages/Year'
 import Semester from '@/pages/Semester'
 import Subject from '@/pages/Subject'
-import SubmitResource from '@/pages/SubmitResource'
 import Login from '@/pages/Login'
-import StudentDashboard from '@/pages/StudentDashboard'
 import AdminDashboard from '@/pages/AdminDashboard'
 import About from '@/pages/About'
 import NotFound from '@/pages/NotFound'
@@ -34,23 +31,7 @@ export default function App() {
           path="/branches/:branchId/years/:yearId/semesters/:semesterId/subjects/:subjectId"
           element={<Subject />}
         />
-        <Route
-          path="/submit"
-          element={
-            <ProtectedRoute>
-              <SubmitResource />
-            </ProtectedRoute>
-          }
-        />
         <Route path="/login" element={<Login />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <StudentDashboard />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="/admin"
           element={

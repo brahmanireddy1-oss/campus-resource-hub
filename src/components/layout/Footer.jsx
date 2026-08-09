@@ -14,9 +14,6 @@ export default function Footer() {
           <NavLink to="/browse" className="text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
             Browse Resources
           </NavLink>
-          <NavLink to="/submit" className="text-[var(--color-text-muted)] hover:text-[var(--color-text)]">
-            Submit Resource
-          </NavLink>
         </nav>
       </div>
     </footer>

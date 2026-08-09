@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Menu, X, LibraryBig, ChevronDown, LayoutDashboard, ShieldCheck, LogOut } from 'lucide-react'
+import { Menu, X, LibraryBig, ChevronDown, ShieldCheck, LogOut } from 'lucide-react'
 import clsx from 'clsx'
 import toast from 'react-hot-toast'
 import ThemeToggle from '@/components/ui/ThemeToggle'
@@ -10,7 +10,6 @@ import { useAuth } from '@/context/AuthContext'
 const links = [
   { to: '/', label: 'Home' },
   { to: '/browse', label: 'Browse Resources' },
-  { to: '/submit', label: 'Submit Resource' },
   { to: '/about', label: 'About' },
 ]
 
@@ -25,14 +24,9 @@ export default function Navbar() {
           <span className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-control)] bg-[var(--color-accent)] text-white">
             <LibraryBig size={17} strokeWidth={2} />
           </span>
-              <div className="flex flex-col leading-tight">
-      <span className="font-display text-[15px] font-semibold tracking-tight">
-        Campus Resources
-      </span>
-      <span className="text-[11px] text-[var(--color-text-muted)] font-medium">
-        MECS
-      </span>
-    </div>
+          <span className="font-display text-[15px] font-semibold tracking-tight">
+            Campus Resources
+          </span>
         </NavLink>
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -97,15 +91,6 @@ export default function Navbar() {
                 {link.label}
               </NavLink>
             ))}
-            {user && (
-              <NavLink
-                to="/dashboard"
-                onClick={() => setOpen(false)}
-                className="rounded-[var(--radius-control)] px-3 py-2.5 text-sm font-medium text-[var(--color-text-muted)]"
-              >
-                My Dashboard
-              </NavLink>
-            )}
             {isAdmin && (
               <NavLink
                 to="/admin"
@@ -181,13 +166,6 @@ function UserMenu({ profile, isAdmin, signOut }) {
 
       {open && (
         <div className="absolute right-0 mt-2 w-52 overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-surface)] py-1 shadow-lg">
-          <NavLink
-            to="/dashboard"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-[var(--color-text)] hover:bg-[var(--color-surface-muted)]"
-          >
-            <LayoutDashboard size={15} /> My Dashboard
-          </NavLink>
           {isAdmin && (
             <NavLink
               to="/admin"

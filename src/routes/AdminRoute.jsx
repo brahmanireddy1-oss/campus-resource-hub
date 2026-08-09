@@ -13,7 +13,7 @@ export default function AdminRoute({ children }) {
   }
 
   if (!isAdmin) {
-    return <Navigate to="/dashboard" replace />
+    return <Navigate to="/" replace />
   }
 
   return children

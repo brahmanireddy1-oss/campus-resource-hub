@@ -1,27 +1,21 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { Plus } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { FolderOpen, FolderX } from 'lucide-react'
 import Breadcrumbs from '@/components/layout/Breadcrumbs'
-import ResourceCard from '@/components/resources/ResourceCard'
 import Button from '@/components/ui/Button'
 import EmptyState from '@/components/ui/EmptyState'
 import { CardGridSkeleton } from '@/components/skeletons/ResourceSkeletons'
-import toast from 'react-hot-toast'
 import { getBranchBySlug } from '@/lib/api/branches'
 import { getYearBySlug } from '@/lib/api/years'
 import { getSemesterBySlug } from '@/lib/api/semesters'
 import { getSubjectBySlug } from '@/lib/api/subjects'
-import { getSubjectResources } from '@/lib/api/resources'
-import { getResourceDownloadUrl } from '@/lib/api/storage'
 
 export default function Subject() {
   const { branchId, yearId, semesterId, subjectId } = useParams()
-  const navigate = useNavigate()
 
   const [year, setYear] = useState(null)
   const [semester, setSemester] = useState(null)
   const [subject, setSubject] = useState(null)
-  const [resources, setResources] = useState([])
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
 
@@ -34,43 +28,16 @@ export default function Subject() {
         setYear(y)
         const s = await getSemesterBySlug(y.id, semesterId)
         setSemester(s)
-        const subj = await getSubjectBySlug(s.id, subjectId)
-        setSubject(subj)
-        setResources(await getSubjectResources(subj.id))
+        setSubject(await getSubjectBySlug(s.id, subjectId))
       })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false))
   }, [branchId, yearId, semesterId, subjectId])
 
-  const grouped = useMemo(() => {
-    const map = new Map()
-    for (const r of resources) {
-      const key = r.resource_type?.name || 'Other'
-      if (!map.has(key)) map.set(key, [])
-      map.get(key).push(r)
-    }
-    return Array.from(map.entries())
-  }, [resources])
-
-  const handleDownload = async (resource) => {
-    try {
-      const url = await getResourceDownloadUrl(resource.file_path)
-      window.open(url, '_blank', 'noopener')
-    } catch (err) {
-      toast.error(err.message || 'Could not generate download link.')
-    }
-  }
-
-  const handleSubmitHere = () => {
-    navigate(
-      `/submit?branchId=${year.branch_id}&yearId=${year.id}&semesterId=${semester.id}&subjectId=${subject.id}`
-    )
-  }
-
   if (loading) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-        <CardGridSkeleton />
+      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+        <CardGridSkeleton count={1} />
       </div>
     )
   }
@@ -84,7 +51,7 @@ export default function Subject() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       <Breadcrumbs
         items={[
           { label: 'Home', to: '/' },
@@ -98,51 +65,42 @@ export default function Subject() {
         ]}
       />
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="font-display text-2xl font-semibold">{subject.name}</h1>
-          {subject.code && (
-            <p className="mt-1 font-mono-tabular text-xs text-[var(--color-text-muted)]">{subject.code}</p>
-          )}
-        </div>
-        <Button size="sm" onClick={handleSubmitHere}>
-          <Plus size={15} /> Submit Resource
-        </Button>
+      <div className="mt-4">
+        <h1 className="font-display text-2xl font-semibold">{subject.name}</h1>
+        {subject.code && (
+          <p className="mt-1 font-mono-tabular text-xs text-[var(--color-text-muted)]">{subject.code}</p>
+        )}
       </div>
 
-      <div className="mt-8 flex flex-col gap-10">
-        {grouped.length === 0 ? (
-          <EmptyState
-            title="No resources yet"
-            description="Be the first to submit a resource for this subject."
-            action={
-              <Button size="sm" onClick={handleSubmitHere}>
-                <Plus size={15} /> Submit Resource
-              </Button>
-            }
-          />
-        ) : (
-          grouped.map(([typeName, items]) => (
-            <div key={typeName}>
-              <h2 className="font-display text-base font-semibold text-[var(--color-text)]">{typeName}</h2>
-              <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {items.map((r) => (
-                  <ResourceCard
-                    key={r.id}
-                    resource={{
-                      title: r.title,
-                      description: r.description,
-                      uploaderName: r.uploader?.full_name || r.uploader?.email,
-                      createdAt: r.created_at,
-                      fileName: r.file_name,
-                      fileSize: r.file_size,
-                    }}
-                    onDownload={() => handleDownload(r)}
-                  />
-                ))}
-              </div>
+      <div className="mt-10">
+        {subject.google_drive_url ? (
+          <div className="flex flex-col items-center gap-4 rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-surface)] px-6 py-14 text-center">
+            <span className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-control)] bg-[var(--color-accent-soft)] text-[var(--color-accent)]">
+              <FolderOpen size={22} strokeWidth={1.75} />
+            </span>
+            <div>
+              <h2 className="font-display text-base font-semibold">All resources for {subject.name}</h2>
+              <p className="mt-1 max-w-sm text-sm text-[var(--color-text-muted)]">
+                Notes, previous papers, assignments, lab programs, books, and PPTs live in this
+                subject's shared Google Drive folder.
+              </p>
             </div>
-          ))
+            <Button
+              as="a"
+              href={subject.google_drive_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              size="lg"
+            >
+              <FolderOpen size={16} /> Open Google Drive Folder
+            </Button>
+          </div>
+        ) : (
+          <EmptyState
+            icon={FolderX}
+            title="No Google Drive folder linked yet"
+            description="An admin hasn't added a Drive folder link for this subject yet. Check back soon."
+          />
         )}
       </div>
     </div>

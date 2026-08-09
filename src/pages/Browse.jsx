@@ -3,19 +3,16 @@ import { useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import SearchBar from '@/components/resources/SearchBar'
 import FilterBar from '@/components/resources/FilterBar'
-import ResourceCard from '@/components/resources/ResourceCard'
+import SubjectDriveCard from '@/components/resources/SubjectDriveCard'
 import EmptyState from '@/components/ui/EmptyState'
 import { CardGridSkeleton } from '@/components/skeletons/ResourceSkeletons'
 import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { getBranches } from '@/lib/api/branches'
 import { getYears } from '@/lib/api/years'
 import { getSemestersByYearId } from '@/lib/api/semesters'
-import { getSubjectsBySemesterId } from '@/lib/api/subjects'
-import { getResourceTypes } from '@/lib/api/resourceTypes'
-import { getApprovedResources } from '@/lib/api/resources'
-import { getResourceDownloadUrl } from '@/lib/api/storage'
+import { searchSubjects } from '@/lib/api/subjects'
 
-const emptyFilters = { branch: '', year: '', semester: '', subject: '', type: '' }
+const emptyFilters = { branch: '', year: '', semester: '' }
 
 export default function Browse() {
   const [searchParams] = useSearchParams()
@@ -26,18 +23,13 @@ export default function Browse() {
   const [branches, setBranches] = useState([])
   const [years, setYears] = useState([])
   const [semesters, setSemesters] = useState([])
-  const [subjects, setSubjects] = useState([])
-  const [types, setTypes] = useState([])
 
-  const [resources, setResources] = useState([])
+  const [subjects, setSubjects] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    Promise.all([getBranches(), getResourceTypes()])
-      .then(([b, t]) => {
-        setBranches(b)
-        setTypes(t)
-      })
+    getBranches()
+      .then(setBranches)
       .catch((err) => toast.error(err.message))
   }, [])
 
@@ -58,24 +50,14 @@ export default function Browse() {
   }, [filters.year])
 
   useEffect(() => {
-    if (!filters.semester) {
-      setSubjects([])
-      return
-    }
-    getSubjectsBySemesterId(filters.semester).then(setSubjects).catch((err) => toast.error(err.message))
-  }, [filters.semester])
-
-  useEffect(() => {
     setLoading(true)
-    getApprovedResources({
+    searchSubjects({
       search: debouncedQuery,
       branchId: filters.branch,
       yearId: filters.year,
       semesterId: filters.semester,
-      subjectId: filters.subject,
-      typeId: filters.type,
     })
-      .then(setResources)
+      .then(setSubjects)
       .catch((err) => toast.error(err.message))
       .finally(() => setLoading(false))
   }, [debouncedQuery, filters])
@@ -83,18 +65,8 @@ export default function Browse() {
   const handleFilterChange = (key, value) => {
     setFilters((prev) => {
       const next = { ...prev, [key]: value }
-      if (key === 'branch') {
-        next.year = ''
-        next.semester = ''
-        next.subject = ''
-      }
-      if (key === 'year') {
-        next.semester = ''
-        next.subject = ''
-      }
-      if (key === 'semester') {
-        next.subject = ''
-      }
+      if (key === 'branch') next.year = next.semester = ''
+      if (key === 'year') next.semester = ''
       return next
     })
   }
@@ -104,27 +76,18 @@ export default function Browse() {
     setQuery('')
   }
 
-  const handleDownload = async (resource) => {
-    try {
-      const url = await getResourceDownloadUrl(resource.file_path)
-      window.open(url, '_blank', 'noopener')
-    } catch (err) {
-      toast.error(err.message || 'Could not generate download link.')
-    }
-  }
-
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <h1 className="font-display text-2xl font-semibold">Browse Resources</h1>
       <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-        Search and filter through every approved resource.
+        Find a subject, then open its Google Drive folder.
       </p>
 
       <div className="mt-6 flex flex-col gap-3">
-        <SearchBar value={query} onChange={setQuery} />
+        <SearchBar value={query} onChange={setQuery} placeholder="Search for a subject…" />
         <FilterBar
           filters={filters}
-          options={{ branches, years, semesters, subjects, types }}
+          options={{ branches, years, semesters }}
           onChange={handleFilterChange}
           onReset={handleReset}
         />
@@ -133,27 +96,15 @@ export default function Browse() {
       <div className="mt-8">
         {loading ? (
           <CardGridSkeleton />
-        ) : resources.length === 0 ? (
+        ) : subjects.length === 0 ? (
           <EmptyState
-            title="No resources found"
+            title="No subjects found"
             description="Try a different search term or clear your filters."
           />
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {resources.map((r) => (
-              <ResourceCard
-                key={r.id}
-                resource={{
-                  title: r.title,
-                  description: r.description,
-                  uploaderName: r.uploader?.full_name || r.uploader?.email,
-                  createdAt: r.created_at,
-                  resourceTypeName: r.resource_type?.name,
-                  fileName: r.file_name,
-                  fileSize: r.file_size,
-                }}
-                onDownload={() => handleDownload(r)}
-              />
+            {subjects.map((s) => (
+              <SubjectDriveCard key={s.id} subject={s} />
             ))}
           </div>
         )}

@@ -4,7 +4,7 @@ import { uploadResourceFile, deleteResourceFile } from './storage'
 const PUBLIC_SELECT = `
   id, title, description, file_path, file_name, file_size, created_at, status, rejection_reason,
   resource_type:resource_types(id, name),
-  uploader:profiles!resources_uploaded_by_fkey(id, full_name, email),
+  uploader:profiles(id, full_name, email),
   subject:subjects(id, name, semester_id)
 `
 

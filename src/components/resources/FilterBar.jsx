@@ -3,14 +3,14 @@ import Select from '@/components/ui/Select'
 import Button from '@/components/ui/Button'
 
 /**
- * filters: { branch, year, semester, subject, type }
- * options: { branches: [{id,name}], years, semesters, subjects, types }
- * onChange(key, value) — year/semester/subject option lists should already
- * be narrowed by the parent based on the currently selected branch/year/semester.
+ * filters: { branch, year, semester }
+ * options: { branches: [{id,name}], years, semesters }
+ * onChange(key, value) — year/semester option lists should already be
+ * narrowed by the parent based on the currently selected branch/year.
  */
 export default function FilterBar({ filters, options, onChange, onReset }) {
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       <Select
         aria-label="Filter by branch"
         value={filters.branch}
@@ -43,6 +43,7 @@ export default function FilterBar({ filters, options, onChange, onReset }) {
         value={filters.semester}
         onChange={(e) => onChange('semester', e.target.value)}
         disabled={!options.semesters.length}
+        className="col-span-2 sm:col-span-1"
       >
         <option value="">All semesters</option>
         {options.semesters.map((s) => (
@@ -52,38 +53,9 @@ export default function FilterBar({ filters, options, onChange, onReset }) {
         ))}
       </Select>
 
-      <Select
-        aria-label="Filter by subject"
-        value={filters.subject}
-        onChange={(e) => onChange('subject', e.target.value)}
-        disabled={!options.subjects.length}
-      >
-        <option value="">All subjects</option>
-        {options.subjects.map((s) => (
-          <option key={s.id} value={s.id}>
-            {s.name}
-          </option>
-        ))}
-      </Select>
-
-      <div className="flex gap-2">
-        <Select
-          aria-label="Filter by resource type"
-          value={filters.type}
-          onChange={(e) => onChange('type', e.target.value)}
-          className="flex-1"
-        >
-          <option value="">All types</option>
-          {options.types.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
-        </Select>
-        <Button variant="ghost" size="md" onClick={onReset} aria-label="Reset filters">
-          <RotateCcw size={15} />
-        </Button>
-      </div>
+      <Button variant="ghost" size="md" onClick={onReset} aria-label="Reset filters">
+        <RotateCcw size={15} /> Reset
+      </Button>
     </div>
   )
 }

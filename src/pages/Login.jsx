@@ -20,7 +20,7 @@ export default function Login() {
 
   // Already logged in — bounce straight to where they were headed.
   if (!loading && user) {
-    const redirectTo = location.state?.from?.pathname || '/dashboard'
+    const redirectTo = location.state?.from?.pathname || '/'
     return <Navigate to={redirectTo} replace />
   }
 
@@ -31,12 +31,12 @@ export default function Login() {
       if (mode === 'sign-in') {
         await signIn({ email, password })
         toast.success('Welcome back!')
-        navigate(location.state?.from?.pathname || '/dashboard', { replace: true })
+        navigate(location.state?.from?.pathname || '/', { replace: true })
       } else {
         const { session } = await signUp({ email, password, fullName })
         if (session) {
           toast.success('Account created!')
-          navigate('/dashboard', { replace: true })
+          navigate('/', { replace: true })
         } else {
           toast.success('Check your email to confirm your account.')
           setMode('sign-in')

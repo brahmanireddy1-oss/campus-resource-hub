@@ -7,12 +7,6 @@ import { getBranches, createBranch, updateBranch, deleteBranch } from '@/lib/api
 import { getYears, createYear, updateYear, deleteYear } from '@/lib/api/years'
 import { getSemestersByYearId, createSemester, updateSemester, deleteSemester } from '@/lib/api/semesters'
 import { getSubjectsBySemesterId, createSubject, updateSubject, deleteSubject } from '@/lib/api/subjects'
-import {
-  getResourceTypes,
-  createResourceType,
-  updateResourceType,
-  deleteResourceType,
-} from '@/lib/api/resourceTypes'
 import { uploadSyllabusFile } from '@/lib/api/storage'
 
 export default function AcademicStructurePanel() {
@@ -20,18 +14,15 @@ export default function AcademicStructurePanel() {
   const [years, setYears] = useState([])
   const [semesters, setSemesters] = useState([])
   const [subjects, setSubjects] = useState([])
-  const [types, setTypes] = useState([])
 
   const [selectedBranch, setSelectedBranch] = useState(null)
   const [selectedYear, setSelectedYear] = useState(null)
   const [selectedSemester, setSelectedSemester] = useState(null)
 
   const loadBranches = () => getBranches().then(setBranches).catch((err) => toast.error(err.message))
-  const loadTypes = () => getResourceTypes().then(setTypes).catch((err) => toast.error(err.message))
 
   useEffect(() => {
     loadBranches()
-    loadTypes()
   }, [])
 
   useEffect(() => {
@@ -156,7 +147,12 @@ export default function AcademicStructurePanel() {
   const saveSubject = async (values, editing) => {
     try {
       if (editing) {
-        await updateSubject(editing.id, { name: values.name, code: values.code, slug: slugify(values.name) })
+        await updateSubject(editing.id, {
+          name: values.name,
+          code: values.code,
+          slug: slugify(values.name),
+          google_drive_url: values.google_drive_url || null,
+        })
         toast.success('Subject updated')
       } else {
         await createSubject({
@@ -165,6 +161,7 @@ export default function AcademicStructurePanel() {
           code: values.code,
           slug: slugify(values.name),
           orderIndex: subjects.length,
+          googleDriveUrl: values.google_drive_url,
         })
         toast.success('Subject added')
       }
@@ -178,31 +175,6 @@ export default function AcademicStructurePanel() {
       await deleteSubject(item.id)
       toast.success('Subject deleted')
       getSubjectsBySemesterId(selectedSemester.id).then(setSubjects)
-    } catch (err) {
-      toast.error(err.message)
-    }
-  }
-
-  // ---- Resource types ----
-  const saveType = async (values, editing) => {
-    try {
-      if (editing) {
-        await updateResourceType(editing.id, { name: values.name, slug: slugify(values.name) })
-        toast.success('Resource type updated')
-      } else {
-        await createResourceType({ name: values.name, slug: slugify(values.name), orderIndex: types.length })
-        toast.success('Resource type added')
-      }
-      loadTypes()
-    } catch (err) {
-      toast.error(err.message)
-    }
-  }
-  const removeType = async (item) => {
-    try {
-      await deleteResourceType(item.id)
-      toast.success('Resource type deleted')
-      loadTypes()
     } catch (err) {
       toast.error(err.message)
     }
@@ -247,12 +219,11 @@ export default function AcademicStructurePanel() {
           onDelete={removeSubject}
           disabled={!selectedSemester}
           disabledMessage="Select a semester first."
-          extraFields={[{ key: 'code', label: 'Code (optional)' }]}
+          extraFields={[
+            { key: 'code', label: 'Code (optional)' },
+            { key: 'google_drive_url', label: 'Google Drive Folder URL' },
+          ]}
         />
-      </div>
-
-      <div className="max-w-sm">
-        <ManagedList title="Resource Types" items={types} onSave={saveType} onDelete={removeType} />
       </div>
     </div>
   )
