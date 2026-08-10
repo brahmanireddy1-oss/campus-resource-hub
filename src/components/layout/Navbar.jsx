@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import Button from '@/components/ui/Button'
 import { useAuth } from '@/context/AuthContext'
+import glugLogo from '../../assets/glug_logo.png'
 
 const links = [
   { to: '/', label: 'Home' },
@@ -21,12 +22,19 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 border-b border-[var(--color-line)] bg-[var(--color-paper)]/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <NavLink to="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
-          <span className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-control)] bg-[var(--color-accent)] text-white">
-            <LibraryBig size={17} strokeWidth={2} />
-          </span>
-          <span className="font-display text-[15px] font-semibold tracking-tight">
-            Campus Resources
-          </span>
+          <span className="font-bold text-sm">
+  MECS
+</span>
+
+<img
+  src={glugLogo}
+  alt="GLUG MECS"
+  className="h-8 w-8 object-contain"
+/>
+
+<span className="font-display text-[15px] font-semibold tracking-tight">
+  Campus Resources
+</span>
         </NavLink>
 
         <nav className="hidden items-center gap-1 md:flex">
