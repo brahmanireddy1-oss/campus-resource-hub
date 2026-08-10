@@ -22,18 +22,19 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 border-b border-[var(--color-line)] bg-[var(--color-paper)]/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <NavLink to="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
-          <span className="font-bold text-sm">
-  MECS
-</span>
-
-<img
+          <img
   src={glugLogo}
   alt="GLUG MECS"
-  className="h-8 w-8 object-contain"
+  className="h-10 w-10 object-contain"
 />
 
-<span className="font-display text-[15px] font-semibold tracking-tight">
-  Campus Resources
+<span className="flex flex-col leading-tight">
+  <span className="font-display text-[15px] font-semibold tracking-tight">
+    Campus Resources
+  </span>
+  <span className="text-[11px] font-semibold tracking-wide">
+    MECS
+  </span>
 </span>
         </NavLink>
 
